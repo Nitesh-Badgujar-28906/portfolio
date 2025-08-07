@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, Link, useParams, useLocation } from 'react-router-dom';
-import emailjs from 'emailjs-com';
+import emailjs from '@emailjs/browser';
 import './App.css';
 import profileGlow from './assets/profile-glow.png';
 // Firebase imports
@@ -265,17 +265,23 @@ function Contact({ links }) {
   );
 }
 
-function AdminPanel() {
+function AdminPanel({
+  profileUrl: initialProfileUrl,
+  projects: initialProjects,
+  services: initialServices,
+  links: initialLinks,
+  onUpdate
+}) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [profileUrl, setProfileUrl] = useState('');
+  const [profileUrl, setProfileUrl] = useState(initialProfileUrl);
   const [profileFile, setProfileFile] = useState(null);
   const [profileStatus, setProfileStatus] = useState('');
-  const [projects, setProjects] = useState([]);
-  const [services, setServices] = useState([]);
+  const [projects, setProjects] = useState(initialProjects);
+  const [services, setServices] = useState(initialServices);
   const [projectForm, setProjectForm] = useState({ title: '', description: '', image: '', tags: '', link: '' });
   const [serviceForm, setServiceForm] = useState({ icon: '', title: '', description: '' });
   const [editingProject, setEditingProject] = useState(null);
@@ -285,57 +291,34 @@ function AdminPanel() {
   const navigate = useNavigate();
   const [uploading, setUploading] = useState(false);
   const [contacts, setContacts] = useState([]);
-  const [links, setLinks] = useState([]);
+  const [links, setLinks] = useState(initialLinks);
   const [linkForm, setLinkForm] = useState({ label: '', url: '' });
   const [editingLink, setEditingLink] = useState(null);
   const [linkStatus, setLinkStatus] = useState('');
+
+  // Sync props to state
+  useEffect(() => { setProfileUrl(initialProfileUrl) }, [initialProfileUrl]);
+  useEffect(() => { setProjects(initialProjects) }, [initialProjects]);
+  useEffect(() => { setServices(initialServices) }, [initialServices]);
+  useEffect(() => { setLinks(initialLinks) }, [initialLinks]);
 
   // Auth state
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setIsAdmin(!!user);
+      if (user) { // User is logged in
+        // Fetch contacts only for admin
+        const unsubContacts = onSnapshot(collection(db, 'contacts'), snap => {
+          setContacts(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.created?.seconds - a.created?.seconds));
+        });
+        return () => unsubContacts();
+      }
     });
     return () => unsub();
   }, []);
 
-  // Fetch profile image, projects, services
-  useEffect(() => {
-    if (!isAdmin) return;
-    // Profile image
-    getDoc(doc(db, 'profile', 'main')).then(snap => {
-      if (snap.exists()) setProfileUrl(snap.data().imageUrl);
-    });
-    // Projects
-    return onSnapshot(collection(db, 'projects'), snap => {
-      setProjects(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-  }, [isAdmin]);
-  useEffect(() => {
-    if (!isAdmin) return;
-    // Services
-    return onSnapshot(collection(db, 'services'), snap => {
-      setServices(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-  }, [isAdmin]);
-
-  // Listen for contact messages
-  useEffect(() => {
-    if (!isAdmin) return;
-    return onSnapshot(collection(db, 'contacts'), snap => {
-      setContacts(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.created?.seconds - a.created?.seconds));
-    });
-  }, [isAdmin]);
-
-  // Listen for links
-  useEffect(() => {
-    if (!isAdmin) return;
-    return onSnapshot(collection(db, 'links'), snap => {
-      setLinks(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-  }, [isAdmin]);
-
   // Login
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setError('');
@@ -354,17 +337,26 @@ function AdminPanel() {
     setProfileStatus('');
   };
   const handleProfileUpload = async () => {
-    if (!profileFile) return;
+    if (!profileFile) {
+      setProfileStatus('Please select an image first.');
+      return;
+    }
     setUploading(true);
     setProfileStatus('Uploading...');
-    const storageRef = ref(storage, 'profile/' + profileFile.name);
-    await uploadBytes(storageRef, profileFile);
-    const url = await getDownloadURL(storageRef);
-    setProfileUrl(url);
-    await setDoc(doc(db, 'profile', 'main'), { imageUrl: url });
-    setProfileStatus('Profile image updated!');
-    setProfileFile(null);
-    setUploading(false);
+    const storageRef = ref(storage, `profile/profileImage`);
+    try {
+      await uploadBytes(storageRef, profileFile);
+      const url = await getDownloadURL(storageRef);
+      await setDoc(doc(db, 'profile', 'main'), { url });
+      setProfileUrl(url);
+      setProfileStatus('Profile image updated successfully!');
+      setProfileFile(null);
+    } catch (error) {
+      console.error("Error uploading profile image:", error);
+      setProfileStatus('Upload failed. Please try again.');
+    } finally {
+      setUploading(false);
+    }
   };
 
   // Projects CRUD
@@ -557,8 +549,8 @@ function App() {
 
   useEffect(() => {
     // Profile image
-    getDoc(doc(db, 'profile', 'main')).then(snap => {
-      if (snap.exists()) setProfileUrl(snap.data().imageUrl);
+    const unsubProfile = onSnapshot(doc(db, 'profile', 'main'), (snap) => {
+      if (snap.exists()) setProfileUrl(snap.data().url);
     });
     // Projects
     const unsubProjects = onSnapshot(collection(db, 'projects'), snap => {
@@ -573,6 +565,7 @@ function App() {
       setLinks(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     });
     return () => {
+      unsubProfile();
       unsubProjects();
       unsubServices();
       unsubLinks();
@@ -582,7 +575,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/admin" element={<AdminPanel profileUrl={profileUrl} projects={projects} services={services} links={links} />} />
         <Route path="/project/:id" element={<ProjectDetail />} />
         <Route path="/*" element={
           <>
