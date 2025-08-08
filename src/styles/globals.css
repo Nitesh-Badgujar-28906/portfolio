@@ -1,0 +1,89 @@
+/* Global Styles */
+body {
+  background: #18182a;
+  color: #e4e4f7;
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Common Classes */
+.section {
+  padding: 4rem 0 3rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #a78bfa;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  letter-spacing: 1px;
+}
+
+/* Button Styles */
+.btn {
+  padding: 0.8rem 2rem;
+  border-radius: 0.7rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px #a78bfa33;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #a78bfa 0%, #6366f1 100%);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #6366f1 0%, #a78bfa 100%);
+  box-shadow: 0 0 16px #a78bfa99;
+}
+
+.btn-secondary {
+  background: #23234d;
+  color: #fff;
+  border: 1.5px solid #a78bfa;
+}
+
+.btn-secondary:hover {
+  background: #a78bfa;
+  color: #23234d;
+}
+
+/* Animations */
+.animate-fadein {
+  animation: fadein 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: none; }
+}
+
+.animate-slidein {
+  animation: slidein 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes slidein {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .section {
+    padding: 2.5rem 0.5rem;
+  }
+}
