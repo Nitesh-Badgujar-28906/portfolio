@@ -3,15 +3,21 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { onSnapshot, collection, doc } from 'firebase/firestore';
 import { db } from './firebase';
 
+// Import contexts
+import { ThemeProvider } from './contexts/ThemeContext';
+
 // Import components
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
+import Skills from './components/Skills';
 import Services from './components/Services';
 import Projects from './components/Projects';
+import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
 import ProjectDetail from './components/ProjectDetail';
 import AdminPanel from './components/AdminPanel';
+import FloatingActions from './components/FloatingActions';
 
 // Import styles
 import './styles/globals.css';
@@ -54,32 +60,37 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <Routes>
-        <Route 
-          path="/admin" 
-          element={
-            <AdminPanel 
-              profileUrl={profileUrl} 
-              projects={projects} 
-              services={services} 
-              links={links} 
-            />
-          } 
-        />
-        <Route path="/project/:id" element={<ProjectDetail />} />
-        <Route path="/*" element={
-          <>
-            <Navbar />
-            <Hero profileUrl={profileUrl} />
-            <About />
-            <Services services={services} />
-            <Projects projects={projects} />
-            <Contact links={links} />
-          </>
-        } />
-      </Routes>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <Routes>
+          <Route 
+            path="/admin" 
+            element={
+              <AdminPanel 
+                profileUrl={profileUrl} 
+                projects={projects} 
+                services={services} 
+                links={links} 
+              />
+            } 
+          />
+          <Route path="/project/:id" element={<ProjectDetail />} />
+          <Route path="/*" element={
+            <>
+              <Navbar />
+              <Hero profileUrl={profileUrl} />
+              <About />
+              <Skills />
+              <Services services={services} />
+              <Projects projects={projects} />
+              <Testimonials />
+              <Contact links={links} />
+              <FloatingActions />
+            </>
+          } />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 

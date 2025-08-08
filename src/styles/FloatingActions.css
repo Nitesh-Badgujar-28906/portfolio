@@ -1,0 +1,157 @@
+/* Floating Action Buttons */
+.floating-actions {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 1000;
+}
+
+.fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--fab-bg);
+  color: var(--fab-text);
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--fab-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.fab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.fab:hover::before {
+  left: 100%;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+  box-shadow: var(--fab-shadow-hover);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+.resume-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  animation: pulse-resume 3s infinite;
+}
+
+.scroll-top-btn {
+  background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Pulse animation for resume button */
+@keyframes pulse-resume {
+  0%, 100% {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6), 
+                0 0 0 8px rgba(102, 126, 234, 0.1);
+  }
+}
+
+/* Tooltip-style labels */
+.fab::after {
+  content: attr(title);
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-right: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.fab:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(-5px);
+}
+
+/* Theme Variables */
+:root[data-theme="dark"] {
+  --fab-bg: rgba(35, 35, 77, 0.9);
+  --fab-text: #ffffff;
+  --fab-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  --fab-shadow-hover: 0 12px 35px rgba(167, 139, 250, 0.4);
+  --tooltip-bg: rgba(24, 24, 42, 0.95);
+  --tooltip-text: #ffffff;
+}
+
+:root[data-theme="light"] {
+  --fab-bg: rgba(255, 255, 255, 0.95);
+  --fab-text: #1f2937;
+  --fab-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  --fab-shadow-hover: 0 12px 35px rgba(99, 102, 241, 0.3);
+  --tooltip-bg: rgba(31, 41, 55, 0.95);
+  --tooltip-text: #ffffff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .floating-actions {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+  
+  .fab {
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+  }
+  
+  .fab::after {
+    display: none; /* Hide tooltips on mobile */
+  }
+}
+
+/* Add scroll-triggered visibility for scroll-to-top button */
+.scroll-top-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 480px) {
+  .floating-actions {
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
