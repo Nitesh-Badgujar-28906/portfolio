@@ -1,0 +1,71 @@
+/* Theme Toggle Styles */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  margin-left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  background: var(--bg-secondary);
+  transform: scale(1.1);
+}
+
+.toggle-container {
+  width: 50px;
+  height: 26px;
+  background: var(--toggle-bg);
+  border-radius: 13px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 6px var(--toggle-shadow);
+}
+
+.toggle-ball {
+  width: 22px;
+  height: 22px;
+  background: var(--toggle-ball-bg);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px var(--toggle-ball-shadow);
+}
+
+.toggle-ball.dark {
+  transform: translateX(24px);
+}
+
+.toggle-ball.light {
+  transform: translateX(2px);
+}
+
+.toggle-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* Light/Dark theme variables */
+:root[data-theme="dark"] {
+  --toggle-bg: #374151;
+  --toggle-shadow: rgba(0, 0, 0, 0.3);
+  --toggle-ball-bg: #f3f4f6;
+  --toggle-ball-shadow: rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="light"] {
+  --toggle-bg: #e5e7eb;
+  --toggle-shadow: rgba(0, 0, 0, 0.1);
+  --toggle-ball-bg: #ffffff;
+  --toggle-ball-shadow: rgba(0, 0, 0, 0.15);
+}

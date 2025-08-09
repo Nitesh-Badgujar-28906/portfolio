@@ -1,0 +1,68 @@
+/* About Section */
+.about-content-grid {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.about-bio {
+  flex: 2;
+  font-size: 1.15rem;
+  color: #e4e4f7;
+  line-height: 1.7;
+}
+
+.about-highlights {
+  flex: 1.2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.highlight-card {
+  background: #23234d;
+  color: #a78bfa;
+  border-radius: 1rem;
+  padding: 1.2rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 0 12px #a78bfa33;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  outline: none;
+}
+
+.highlight-card span {
+  display: block;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.highlight-card:hover, 
+.highlight-card:focus {
+  background: linear-gradient(90deg, #a78bfa 0%, #6366f1 100%);
+  color: #fff;
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow: 0 0 24px #a78bfa99;
+}
+
+@media (max-width: 900px) {
+  .about-content-grid {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .about-highlights {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-highlights {
+    grid-template-columns: 1fr;
+  }
+}
