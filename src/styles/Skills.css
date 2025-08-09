@@ -1,4 +1,4 @@
-/* Skills Section */
+/* Skills Section - Mobile First Responsive Design */
 .skills-section {
   position: relative;
   overflow: hidden;
@@ -6,43 +6,50 @@
 
 .skills-intro {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
 .skills-intro p {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
   color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
+  line-height: 1.6;
+  padding: 0 var(--space-md);
 }
 
+/* Mobile-first grid that adapts to screen size */
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  padding: 0 1rem;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 3vw, 2rem);
+  padding: 0 var(--space-md);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .skill-card {
   background: var(--bg-card);
-  border-radius: 1.2rem;
-  padding: 2rem 1.5rem;
+  border-radius: var(--border-radius-xl);
+  padding: clamp(1.25rem, 4vw, 2rem) clamp(1rem, 3vw, 1.5rem);
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
   position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-normal) var(--easing);
   opacity: 0;
   transform: translateY(30px);
   overflow: hidden;
+  box-shadow: 0 4px 20px var(--shadow-light);
 }
 
 .skill-card.animate {
   opacity: 1;
   transform: translateY(0);
-  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: slideInUp 0.6s var(--easing) forwards;
 }
 
-.skill-card:hover {
+.skill-card:hover,
+.skill-card:focus-within {
   transform: translateY(-5px);
   box-shadow: 0 20px 40px var(--shadow-hover);
   border-color: var(--skill-color);
@@ -52,50 +59,61 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
+  gap: var(--space-sm);
 }
 
 .skill-info {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: clamp(0.5rem, 2vw, 0.75rem);
+  flex: 1;
+  min-width: 0; /* Allows text to truncate if needed */
 }
 
 .skill-icon {
-  font-size: 1.8rem;
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  flex-shrink: 0;
 }
 
 .skill-name {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
   font-weight: 600;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .skill-percentage {
-  font-size: 1.2rem;
+  font-size: clamp(1.1rem, 3vw, 1.2rem);
   font-weight: 700;
   color: var(--skill-color);
   text-shadow: 0 0 10px var(--skill-color);
+  flex-shrink: 0;
+  min-width: 3rem;
+  text-align: right;
 }
 
 .skill-progress-container {
   width: 100%;
-  height: 8px;
+  height: clamp(6px, 1.5vw, 8px);
   background: var(--progress-bg);
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   overflow: hidden;
   position: relative;
-  margin-top: 1rem;
+  margin-top: var(--space-md);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .skill-progress {
   height: 100%;
   background: linear-gradient(90deg, var(--skill-color), var(--skill-color));
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   width: 0%;
   position: relative;
-  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 1.5s var(--easing);
   box-shadow: 0 0 20px var(--skill-color);
 }
 
@@ -125,12 +143,13 @@
   height: 100%;
   pointer-events: none;
   overflow: hidden;
+  opacity: 0.6;
 }
 
 .particle {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: clamp(3px, 1vw, 4px);
+  height: clamp(3px, 1vw, 4px);
   background: var(--skill-color);
   border-radius: 50%;
   opacity: 0;
@@ -206,13 +225,81 @@
   --progress-bg: rgba(229, 231, 235, 0.8);
 }
 
-@media (max-width: 768px) {
+/* Responsive Design - Progressive Enhancement */
+
+/* Small tablets and large phones */
+@media (min-width: 640px) {
   .skills-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+  .skills-grid {
+    gap: 2rem;
+    padding: 0 var(--space-lg);
   }
   
   .skill-card {
-    padding: 1.5rem 1rem;
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .skills-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1280px) {
+  .skills-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1536px) {
+  .skills-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1400px;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .skill-card {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .skill-card.animate {
+    animation: none;
+  }
+  
+  .skill-progress {
+    transition: none;
+  }
+  
+  .skill-progress-glow,
+  .particle {
+    animation: none;
+    display: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .skill-card {
+    border-width: 2px;
+    border-color: var(--text-primary);
+  }
+  
+  .skill-progress-container {
+    border: 1px solid var(--text-primary);
   }
 }
